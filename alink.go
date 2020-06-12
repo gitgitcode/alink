@@ -56,6 +56,7 @@ func isImgElement(n *html.Node) bool {
 //get page title
 func titleText(n *html.Node) (string, bool) {
 	if isTitleElement(n) {
+		//log.Print(n)
 		return n.FirstChild.Data, true
 	}
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
@@ -86,7 +87,7 @@ func videoSrc(node *html.Node) (string, bool) {
 }
 
 //get video src
-func Video(httpBody *bytes.Reader) (s [] string, err error) {
+func VideoSrc(httpBody *bytes.Reader) (s [] string, err error) {
 	var src []string
 	node, err := html.Parse(httpBody)
 	if err != nil {
@@ -107,7 +108,9 @@ func Title(httpBody *bytes.Reader) (t string, err error) {
 	if err != nil {
 		return title,err
 	}
+
 	title, _ = titleText(node)
+
 	return title, nil
 }
 
