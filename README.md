@@ -1,4 +1,7 @@
 # alink
+
+[![Build Status](https://travis-ci.org/gitgitcode/alink.svg?branch=master)](https://travis-ci.org/gitgitcode/alink)
+
 - [ZH](#简介)
 
 Golang package to read href,video,title ...  tags from an HTML page。
