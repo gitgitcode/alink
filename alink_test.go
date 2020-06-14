@@ -65,7 +65,7 @@ func TestAlink(t *testing.T) {
 		links = append(links, k)
 		tmp = i
 	}
-	log.Print(links,tmp)
+	//log.Print(links,tmp)
 	if tmp != 2 || len(links) != 3 {
 		t.Error("Wrong number of links returned")
 	}
@@ -156,6 +156,10 @@ func TestTitle(t *testing.T) {
 	p := []byte(page)
 	a := args{bytes.NewReader(p)}
 
+	page1 := "<html><header><title>test1</title></header><body></body></html>"
+	p1 := []byte(page1)
+	a1 := args{bytes.NewReader(p1)}
+
 
 	tests := []struct {
 		name    string
@@ -164,6 +168,7 @@ func TestTitle(t *testing.T) {
 		wantErr bool
 	}{
 		{"title",a,"the title", false},
+		{"title",a1,"test1", false},
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
@@ -188,3 +193,5 @@ func BenchmarkAlink(b *testing.B) {
 		Alink(bytes.NewReader(p))
 	}
 }
+
+//go test -cover -v -coverprofile=c.out

@@ -103,7 +103,6 @@ func VideoSrc(httpBody *bytes.Reader) (s [] string, err error) {
 //get pages title
 func Title(httpBody *bytes.Reader) (t string, err error) {
 	title := ""
-	//httpBodyf = ioutil.NopCloser(httpBody)
 	node, err := html.Parse(httpBody)
 	if err != nil {
 		return title,err
