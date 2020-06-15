@@ -1,3 +1,11 @@
+// 一个简单的标签处理包
+// Copyright 2010 The Go Authors.  All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
+// Package alink  a html tag collect package
+//
+//
 package alink
 
 import (
@@ -10,7 +18,8 @@ import (
 	"strings"
 )
 
-//create new io.reader body
+// NewRespBody is the func create a new io.reader body
+// It returns a point of bytes.Reader
 func NewRespBody(respBody io.Reader) (*bytes.Reader, error) {
 
 	b, err := ioutil.ReadAll(respBody)
@@ -18,8 +27,9 @@ func NewRespBody(respBody io.Reader) (*bytes.Reader, error) {
 	return reader, err
 }
 
-//检查是否是url
-//check string is url
+// 检查是否是url
+// check string is url
+// It return bool
 func IsValidUrl(s string) bool {
 	_, err := url.ParseRequestURI(s)
 	if err != nil {
@@ -33,27 +43,27 @@ func IsValidUrl(s string) bool {
 	return true
 }
 
-//check title
+// isTitleElement
 func isTitleElement(n *html.Node) bool {
 	return n.Type == html.ElementNode && n.Data == "title"
 }
 
-//check video
+// Check video
 func isVideoElement(n *html.Node) bool {
 	return n.Type == html.ElementNode && n.Data == "video"
 }
 
-//check a
+// isAHrefElement
 func isAHrefElement(n *html.Node) bool {
 	return n.Type == html.ElementNode && n.Data == "a"
 }
 
-//check img
+// isImgElement
 func isImgElement(n *html.Node) bool {
-	return n.Type == html.ElementNode && n.Data == "a"
+	return n.Type == html.ElementNode && n.Data == "img"
 }
 
-//get page title
+// Get page title
 func titleText(n *html.Node) (string, bool) {
 	if isTitleElement(n) {
 		//log.Print(n)
@@ -68,6 +78,7 @@ func titleText(n *html.Node) (string, bool) {
 	return "", false
 }
 
+// videoSrc get video src
 func videoSrc(node *html.Node) (string, bool) {
 	if isVideoElement(node) {
 		for _, attr := range node.Attr {
@@ -86,7 +97,8 @@ func videoSrc(node *html.Node) (string, bool) {
 	return "", false
 }
 
-//get video src
+// VideoSrc get the video tags src
+// It returns []string
 func VideoSrc(httpBody *bytes.Reader) (s [] string, err error) {
 	var src []string
 	node, err := html.Parse(httpBody)
@@ -100,7 +112,7 @@ func VideoSrc(httpBody *bytes.Reader) (s [] string, err error) {
 	return src, nil
 }
 
-//get pages title
+// Title to get pages title return a string
 func Title(httpBody *bytes.Reader) (t string, err error) {
 	title := ""
 	node, err := html.Parse(httpBody)
@@ -113,7 +125,8 @@ func Title(httpBody *bytes.Reader) (t string, err error) {
 	return title, nil
 }
 
-//get all links
+// Alink get all links
+// It returns point []string and a bool value to check the page has a tags
 func Alink(httpBody *bytes.Reader) (l *[]string, b bool) {
 	var links []string
 	node, err := html.Parse(httpBody)
@@ -124,7 +137,7 @@ func Alink(httpBody *bytes.Reader) (l *[]string, b bool) {
 	return ff, true
 }
 
-//get href url
+// alLink Get href url
 func alLink(node *html.Node, h *[]string) ( f *[]string,n bool) {
 	b := false
 
@@ -150,7 +163,7 @@ func alLink(node *html.Node, h *[]string) ( f *[]string,n bool) {
 	return h, b
 }
 
-
+// TrimHash
 func trimHash(l string) string {
 	if strings.Contains(l, "#") {
 		var index int
@@ -166,7 +179,7 @@ func trimHash(l string) string {
 }
 
 
-//check url exits
+// Check url exits
 func check(sl *[]string, s string) bool {
 	var check bool
 	for _, str := range *sl {
