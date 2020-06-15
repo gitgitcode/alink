@@ -116,7 +116,7 @@ func Title(httpBody *bytes.Reader) (t string, err error) {
 	title := ""
 	node, err := html.Parse(httpBody)
 	if err != nil {
-		return title,err
+		return title, err
 	}
 
 	title, _ = titleText(node)
@@ -130,24 +130,24 @@ func Alink(httpBody *bytes.Reader) (l *[]string, b bool) {
 	var links []string
 	node, err := html.Parse(httpBody)
 	if err != nil {
-		return &links,false
+		return &links, false
 	}
 	ff, _ := alLink(node, &links)
 	return ff, true
 }
 
 // alLink Get href url
-func alLink(node *html.Node, h *[]string) ( f *[]string,n bool) {
+func alLink(node *html.Node, h *[]string) (f *[]string, n bool) {
 	b := false
 
 	if isAHrefElement(node) {
 		for _, a := range node.Attr {
 			if a.Key == "href" {
 				s := trimHash(a.Val)
-				if check(h,s)==false{
+				if check(h, s) == false {
 					//*h = make([]string,0,len(*h)+len(s))
 					//log.Println(cap(f))
-					*h= append(*h, s)
+					*h = append(*h, s)
 				}
 
 				return h, true
@@ -176,7 +176,6 @@ func trimHash(l string) string {
 	}
 	return l
 }
-
 
 // Check url exits
 func check(sl *[]string, s string) bool {

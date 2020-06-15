@@ -85,8 +85,8 @@ func TestNewRespBody(t *testing.T) {
 	str := []byte(s)
 	reader := bytes.NewReader(str)
 	//str := strings.NewReader(s)
-	abc ,err := NewRespBody(reader)
-	if err !=nil{
+	abc, err := NewRespBody(reader)
+	if err != nil {
 		t.Error(err)
 	}
 	cc := html.NewTokenizer(abc)
@@ -94,13 +94,11 @@ func TestNewRespBody(t *testing.T) {
 	tokenType := cc.Next()
 
 	token := cc.Token()
-	log.Print(tokenType,token)
+	log.Print(tokenType, token)
 	if token.DataAtom.String() != "div" {
 		t.Error("Wrong body ")
 	}
 }
-
-
 
 func TestVideo(t *testing.T) {
 	var reader = `<a href="http://jjjj.com">1</a>
@@ -126,7 +124,7 @@ func TestVideo(t *testing.T) {
 		wantS   [] string
 		wantErr bool
 	}{
-		{"video", f, []string{"http://abc.com/ab.mp4"}, false },
+		{"video", f, []string{"http://abc.com/ab.mp4"}, false},
 	}
 
 	//log.Print(tests[0].wantS)
@@ -160,15 +158,14 @@ func TestTitle(t *testing.T) {
 	p1 := []byte(page1)
 	a1 := args{bytes.NewReader(p1)}
 
-
 	tests := []struct {
 		name    string
 		args    args
 		wantT   string
 		wantErr bool
 	}{
-		{"title",a,"the title", false},
-		{"title",a1,"test1", false},
+		{"title", a, "the title", false},
+		{"title", a1, "test1", false},
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
@@ -189,7 +186,7 @@ func BenchmarkAlink(b *testing.B) {
 	page := "<html><header><title>the title</title></header><body></body></html>"
 	p := []byte(page)
 
-	for i := 0;i<b.N ;i++{
+	for i := 0; i < b.N; i++ {
 		Alink(bytes.NewReader(p))
 	}
 }
