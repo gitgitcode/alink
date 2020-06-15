@@ -121,7 +121,7 @@ func TestVideo(t *testing.T) {
 	var tests = []struct {
 		name    string
 		args    args
-		wantS   [] string
+		wantS   []string
 		wantErr bool
 	}{
 		{"video", f, []string{"http://abc.com/ab.mp4"}, false},

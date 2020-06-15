@@ -98,7 +98,7 @@ func videoSrc(node *html.Node) (string, bool) {
 
 // VideoSrc get the video tags src
 // It returns []string
-func VideoSrc(httpBody *bytes.Reader) (s [] string, err error) {
+func VideoSrc(httpBody *bytes.Reader) (s []string, err error) {
 	var src []string
 	node, err := html.Parse(httpBody)
 	if err != nil {
