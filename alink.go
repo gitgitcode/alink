@@ -18,10 +18,10 @@ import (
 )
 
 // GetBytesReaderWithIoReader create a new bytes reader
-func GetBytesReaderWithIoReader(respBody io.Reader)(reader *bytes.Reader ,err error){
+func GetBytesReaderWithIoReader(respBody io.Reader) (reader *bytes.Reader, err error) {
 
 	c, err := ioutil.ReadAll(respBody)
-	if err == nil{
+	if err == nil {
 		reader = bytes.NewReader(c)
 	}
 	return reader, err
@@ -33,7 +33,6 @@ func GetByteWithIoReader(respBody io.Reader) ([]byte, error) {
 	b, err := ioutil.ReadAll(respBody)
 	return b, err
 }
-
 
 // GetByteReader use  bytes.NewReader create a new reapBody to read
 func GetByteReader(respBody []byte) *bytes.Reader {
@@ -141,7 +140,7 @@ func TitleBytes(httpBody *bytes.Reader) (t string, err error) {
 // GetTitleWithByte
 func GetTitleWithByte(httpBody []byte) (t string, err error) {
 	title := ""
-	body:= GetByteReader(httpBody)
+	body := GetByteReader(httpBody)
 
 	node, err := html.Parse(body)
 	if err != nil {
@@ -154,47 +153,47 @@ func GetTitleWithByte(httpBody []byte) (t string, err error) {
 }
 
 // GetImgSrcWithBytesReader get all img urls
-func GetImgSrcWithBytesReader(httpBody *bytes.Reader )(i *[]string, err error){
-	ul:= []string{}
-	page,err := html.Parse(httpBody)
-	if err != nil{
-		return &ul,err
+func GetImgSrcWithBytesReader(httpBody *bytes.Reader) (i *[]string, err error) {
+	ul := []string{}
+	page, err := html.Parse(httpBody)
+	if err != nil {
+		return &ul, err
 	}
-	ll , _ := getImgUrl(page,&ul)
-	return ll,nil
+	ll, _ := getImgUrl(page, &ul)
+	return ll, nil
 
 }
 
 // GetImgSrcWithByte
-func GetImgSrcWithByte(httpBody []byte )(i *[]string, err error){
+func GetImgSrcWithByte(httpBody []byte) (i *[]string, err error) {
 	var ul []string
 	mm := GetByteReader(httpBody)
 
-	page,err := html.Parse(mm)
-	if err != nil{
-		return &ul,err
+	page, err := html.Parse(mm)
+	if err != nil {
+		return &ul, err
 	}
-	ll , _ := getImgUrl(page,&ul)
-	return ll,nil
+	ll, _ := getImgUrl(page, &ul)
+	return ll, nil
 
 }
 
 // getImgUrl
 func getImgUrl(node *html.Node, ad *[]string) (l *[]string, b bool) {
 	flag := false
-	if isImgElement(node){
-		for _, v := range node.Attr{
+	if isImgElement(node) {
+		for _, v := range node.Attr {
 			if v.Key == "src" {
 				if check(ad, v.Val) == false {
 					*ad = append(*ad, v.Val)
 				}
 			}
 		}
-		return ad ,true
+		return ad, true
 	}
 
-	for p:= node.FirstChild;p!=nil;p= p.NextSibling{
-		ul,f := getImgUrl(p,ad)
+	for p := node.FirstChild; p != nil; p = p.NextSibling {
+		ul, f := getImgUrl(p, ad)
 		if f {
 			flag = f
 			ad = ul
@@ -227,7 +226,6 @@ func GetHrefWithByte(httpBody []byte) (l *[]string, err error) {
 	ff, _ := getHref(node, &links)
 	return ff, nil
 }
-
 
 // getHref get url
 func getHref(node *html.Node, h *[]string) (f *[]string, n bool) {

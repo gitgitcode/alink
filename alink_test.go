@@ -86,12 +86,11 @@ func TestGetImgSrcWithBytesReader(t *testing.T) {
 		httpBody *bytes.Reader
 	}
 
-
 	var html = `<a href="http://jjjj.com">1</a> <video src="http://abc.com/ab.mp4">
   <a style=\"\" href=http://imgur.com>3</a> <img src="abc.com/img.jpg">http://alink.com</p>`
 
 	c := []byte(html)
-	i :=  args{
+	i := args{
 		bytes.NewReader(c),
 	}
 
@@ -99,22 +98,22 @@ func TestGetImgSrcWithBytesReader(t *testing.T) {
   <a style=\"\" href=http://imgur.com>3</a> <img lin="abc.com/img.jpg">http://alink.com</p>`
 
 	c1 := []byte(html1)
-	i1 :=  args{
+	i1 := args{
 		bytes.NewReader(c1),
 	}
 
-	var tests =[]struct {
-		name string
-		args args
-		wantS *[]string
+	var tests = []struct {
+		name    string
+		args    args
+		wantS   *[]string
 		wantErr bool
 	}{
-		{"img",i,&[]string{"abc.com/img.jpg"},false },
-		{"imgNoSrc",i1,&[]string{},false },
+		{"img", i, &[]string{"abc.com/img.jpg"}, false},
+		{"imgNoSrc", i1, &[]string{}, false},
 	}
-	for _, tt :=range tests{
-		t.Run(tt.name,func(t *testing.T){
-			gotS ,err:= GetImgSrcWithBytesReader(tt.args.httpBody)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotS, err := GetImgSrcWithBytesReader(tt.args.httpBody)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetImgSrcWithBytesReader() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -238,8 +237,6 @@ func BenchmarkAlink(b *testing.B) {
 	}
 }
 
-
-
 func TestGetImgSrcWithByte(t *testing.T) {
 	type args struct {
 		httpBody []byte
@@ -250,16 +247,16 @@ func TestGetImgSrcWithByte(t *testing.T) {
   http://alink.com
 </p>`
 
-	 //string to byte.reader
-	  httpBody :=args{[]byte(reader) }
+	//string to byte.reader
+	httpBody := args{[]byte(reader)}
 
-	  tests := []struct {
+	tests := []struct {
 		name    string
 		args    args
 		wantI   *[]string
 		wantErr bool
 	}{
-		{"img",httpBody, &[]string{"http://jjjj.com"},false},
+		{"img", httpBody, &[]string{"http://jjjj.com"}, false},
 	}
 
 	for _, tt := range tests {
@@ -294,7 +291,7 @@ func TestGetTitleWithByte(t *testing.T) {
 		wantErr bool
 	}{
 		// TODO: Add test cases.
-		{"title",a1,"test1",false},
+		{"title", a1, "test1", false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -315,7 +312,7 @@ func TestGetByteWithIoReader(t *testing.T) {
 		respBody io.Reader
 	}
 
-	af :=[]byte("abc")
+	af := []byte("abc")
 
 	body := args{
 		bytes.NewReader(af),
@@ -327,7 +324,7 @@ func TestGetByteWithIoReader(t *testing.T) {
 		wantErr bool
 	}{
 		// TODO: Add test cases.
-		{"readToByte",body,[]byte{97,98,99},false},
+		{"readToByte", body, []byte{97, 98, 99}, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -383,8 +380,8 @@ func TestGetHrefWithByte1(t *testing.T) {
 	type args struct {
 		httpBody []byte
 	}
-	html :=`<p>test<a href="test.com">one</a></p>`
-	html1 :=`<p>test <a href="#">one</a></p>`
+	html := `<p>test<a href="test.com">one</a></p>`
+	html1 := `<p>test <a href="#">one</a></p>`
 
 	h := []byte(html)
 	h1 := []byte(html1)
@@ -399,8 +396,8 @@ func TestGetHrefWithByte1(t *testing.T) {
 		wantErr bool
 	}{
 		// TODO: Add test cases.
-		{"one",arr,&[]string{"test.com"},false},
-		{"two",arr1,&[]string{""},false},
+		{"one", arr, &[]string{"test.com"}, false},
+		{"two", arr1, &[]string{""}, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
