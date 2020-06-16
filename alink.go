@@ -17,13 +17,28 @@ import (
 	"strings"
 )
 
-// NewRespBody is the func create a new io.reader body
-// It returns a point of bytes.Reader
-func NewRespBody(respBody io.Reader) (*bytes.Reader, error) {
+// GetBytesReaderWithIoReader create a new bytes reader
+func GetBytesReaderWithIoReader(respBody io.Reader)(reader *bytes.Reader ,err error){
 
-	b, err := ioutil.ReadAll(respBody)
-	reader := bytes.NewReader(b)
+	c, err := ioutil.ReadAll(respBody)
+	if err == nil{
+		reader = bytes.NewReader(c)
+	}
 	return reader, err
+}
+
+// GetByteWithIoReader is the func use ioutil.ReadAll() change to byte
+// It returns []byte
+func GetByteWithIoReader(respBody io.Reader) ([]byte, error) {
+	b, err := ioutil.ReadAll(respBody)
+	return b, err
+}
+
+
+// GetByteReader use  bytes.NewReader create a new reapBody to read
+func GetByteReader(respBody []byte) *bytes.Reader {
+	reader := bytes.NewReader(respBody)
+	return reader
 }
 
 // 检查是否是url
@@ -63,13 +78,12 @@ func isImgElement(n *html.Node) bool {
 }
 
 // Get page title
-func titleText(n *html.Node) (string, bool) {
+func getTitleText(n *html.Node) (string, bool) {
 	if isTitleElement(n) {
-		//log.Print(n)
 		return n.FirstChild.Data, true
 	}
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		result, ok := titleText(c)
+		result, ok := getTitleText(c)
 		if ok {
 			return result, ok
 		}
@@ -78,7 +92,7 @@ func titleText(n *html.Node) (string, bool) {
 }
 
 // videoSrc get video src
-func videoSrc(node *html.Node) (string, bool) {
+func getVideoSrc(node *html.Node) (string, bool) {
 	if isVideoElement(node) {
 		for _, attr := range node.Attr {
 			if attr.Key == "src" {
@@ -88,7 +102,7 @@ func videoSrc(node *html.Node) (string, bool) {
 		return "", true
 	}
 	for c := node.FirstChild; c != nil; c = c.NextSibling {
-		mark, ok := videoSrc(c)
+		mark, ok := getVideoSrc(c)
 		if ok {
 			return mark, ok
 		}
@@ -98,48 +112,126 @@ func videoSrc(node *html.Node) (string, bool) {
 
 // VideoSrc get the video tags src
 // It returns []string
-func VideoSrc(httpBody *bytes.Reader) (s []string, err error) {
+func GetVideoSrcWithBytesReader(httpBody *bytes.Reader) (s []string, err error) {
 	var src []string
 	node, err := html.Parse(httpBody)
 	if err != nil {
 		return src, err
 	}
-	link, flag := videoSrc(node)
+	link, flag := getVideoSrc(node)
 	if flag {
 		src = append(src, link)
 	}
 	return src, nil
 }
 
-// Title to get pages title return a string
-func Title(httpBody *bytes.Reader) (t string, err error) {
+// TitleBytes to get pages title return a string
+func TitleBytes(httpBody *bytes.Reader) (t string, err error) {
 	title := ""
 	node, err := html.Parse(httpBody)
 	if err != nil {
 		return title, err
 	}
 
-	title, _ = titleText(node)
+	title, _ = getTitleText(node)
 
 	return title, nil
 }
 
-// Alink get all links
-// It returns point []string and a bool value to check the page has a tags
-func Alink(httpBody *bytes.Reader) (l *[]string, b bool) {
+// GetTitleWithByte
+func GetTitleWithByte(httpBody []byte) (t string, err error) {
+	title := ""
+	body:= GetByteReader(httpBody)
+
+	node, err := html.Parse(body)
+	if err != nil {
+		return title, err
+	}
+
+	title, _ = getTitleText(node)
+
+	return title, nil
+}
+
+// GetImgSrcWithBytesReader get all img urls
+func GetImgSrcWithBytesReader(httpBody *bytes.Reader )(i *[]string, err error){
+	ul:= []string{}
+	page,err := html.Parse(httpBody)
+	if err != nil{
+		return &ul,err
+	}
+	ll , _ := getImgUrl(page,&ul)
+	return ll,nil
+
+}
+
+// GetImgSrcWithByte
+func GetImgSrcWithByte(httpBody []byte )(i *[]string, err error){
+	var ul []string
+	mm := GetByteReader(httpBody)
+
+	page,err := html.Parse(mm)
+	if err != nil{
+		return &ul,err
+	}
+	ll , _ := getImgUrl(page,&ul)
+	return ll,nil
+
+}
+
+// getImgUrl
+func getImgUrl(node *html.Node, ad *[]string) (l *[]string, b bool) {
+	flag := false
+	if isImgElement(node){
+		for _, v := range node.Attr{
+			if v.Key == "src" {
+				if check(ad, v.Val) == false {
+					*ad = append(*ad, v.Val)
+				}
+			}
+		}
+		return ad ,true
+	}
+
+	for p:= node.FirstChild;p!=nil;p= p.NextSibling{
+		ul,f := getImgUrl(p,ad)
+		if f {
+			flag = f
+			ad = ul
+		}
+
+	}
+	return ad, flag
+}
+
+// GetHrefWithBytesReader get all links
+// It returns point []string
+func GetHrefWithBytesReader(httpBody *bytes.Reader) (l *[]string, err error) {
 	var links []string
 	node, err := html.Parse(httpBody)
 	if err != nil {
-		return &links, false
+		return &links, err
 	}
-	ff, _ := alLink(node, &links)
-	return ff, true
+	ff, _ := getHref(node, &links)
+	return ff, nil
 }
 
-// alLink Get href url
-func alLink(node *html.Node, h *[]string) (f *[]string, n bool) {
-	b := false
+// GetHrefWithByte
+func GetHrefWithByte(httpBody []byte) (l *[]string, err error) {
+	var links []string
+	mm := GetByteReader(httpBody)
+	node, err := html.Parse(mm)
+	if err != nil {
+		return &links, err
+	}
+	ff, _ := getHref(node, &links)
+	return ff, nil
+}
 
+
+// getHref get url
+func getHref(node *html.Node, h *[]string) (f *[]string, n bool) {
+	b := false
 	if isAHrefElement(node) {
 		for _, a := range node.Attr {
 			if a.Key == "href" {
@@ -155,7 +247,7 @@ func alLink(node *html.Node, h *[]string) (f *[]string, n bool) {
 		}
 	}
 	for c := node.FirstChild; c != nil; c = c.NextSibling {
-		all, flag := alLink(c, h)
+		all, flag := getHref(c, h)
 		h = all
 		b = flag
 	}
