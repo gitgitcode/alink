@@ -3,6 +3,9 @@
 [![Build Status](https://travis-ci.org/gitgitcode/alink.svg?branch=master)](https://travis-ci.org/gitgitcode/alink)
 [![Coverage Status](https://coveralls.io/repos/github/gitgitcode/alink/badge.svg?branch=master)](https://coveralls.io/github/gitgitcode/alink?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/gitgitcode/alink)](https://goreportcard.com/report/github.com/gitgitcode/alink)
+[![go.dev reference](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white&style=flat-square)](https://pkg.go.dev/github.com/gitgitcode/alink?tab=doc) 
+
+
 - [ZH](#简介)
 
 Golang package to read href,video,title,img ...  tags from an HTML page。
